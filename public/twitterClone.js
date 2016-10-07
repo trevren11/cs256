@@ -25,11 +25,15 @@ function startTweetListener() {
 		// console.log(tweet.val());
 		var d = new Date(tweet.val().timeStamp);
 		d = d.toDateString();
-		console.log("KKKKKK " + k);
+		// console.log("KKKKKK " + k); // previous key
 		$("#tweetlist").prepend(
-			'<div class="panel panel-primary"><div class="panel-heading">'
-			+ tweet.val().sender + '</div><div class="panel-body"><p>tweeted: '
-			+ tweet.val().message + '</p>' + d + '</div></div>');
+			'<div id=' + tweet.key + ' class="panel panel-primary"><div class="panel-heading">Sender: '
+			+ tweet.val().sender
+			+ '<a id="del_' + tweet.key + '" class="close remove" data-dismiss="alert" aria-label="close">&times;</a>'
+			+ '</div>'
+			+ '<div class="panel-body"><p>tweeted: '
+			+ tweet.val().message + '</p>' + d + '</div>'
+			+ '</div > ');
 	});
 }
 
@@ -37,6 +41,10 @@ $(document).ready(function () {
 	// Add jQuery inside here
 	console.log(firebase);
 	startTweetListener();
+
+	$('.panel-heading').click(function(){
+		console.log("GOT IT");
+	})
 
 	$('#addTweet').submit(function (event) {
 		// console(this.name);
@@ -49,7 +57,8 @@ $(document).ready(function () {
 		firebase.database().ref('chatty/').push({
 			sender: name,
 			message: message,
-			timeStamp: date
+			timeStamp: date,
+			inReplyTo: ""
 		});
 		return false;
 	});
